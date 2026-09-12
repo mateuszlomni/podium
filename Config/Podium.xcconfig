@@ -1,0 +1,8 @@
+// Shared build settings. Personal values (bundle ID, Apple team, Spotify Client ID)
+// belong in Secrets.xcconfig, which git ignores; copy Secrets.example.xcconfig to create it.
+
+PRODUCT_BUNDLE_IDENTIFIER = com.example.podium
+DEVELOPMENT_TEAM =
+SPOTIFY_CLIENT_ID =
+
+#include? "Secrets.xcconfig"
