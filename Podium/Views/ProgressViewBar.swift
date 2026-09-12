@@ -10,21 +10,25 @@ struct ProgressViewBar: View {
             let progress = scrubFraction.map { $0 * duration } ?? player.progress(at: context.date)
             let value = duration > 0 ? progress / duration : 0
 
-            VStack(spacing: 7) {
+            VStack(spacing: 6) {
                 GeometryReader { proxy in
                     ZStack(alignment: .leading) {
                         Capsule()
-                            .fill(.white.opacity(0.12))
+                            .fill(.white.opacity(0.1))
+                            .frame(height: 3)
 
                         Capsule()
-                            .fill(.white.opacity(0.78))
-                            .frame(width: proxy.size.width * value)
+                            .fill(.white.opacity(0.7))
+                            .frame(width: proxy.size.width * value, height: 3)
 
                         Circle()
                             .fill(.white)
-                            .frame(width: 12, height: 12)
-                            .offset(x: max(0, min(proxy.size.width - 12, proxy.size.width * value - 6)))
+                            .frame(width: 11, height: 11)
+                            .offset(x: max(0, min(proxy.size.width - 11, proxy.size.width * value - 5.5)))
+                            .opacity(scrubFraction == nil ? 0 : 1)
+                            .animation(.easeOut(duration: 0.15), value: scrubFraction == nil)
                     }
+                    .frame(maxHeight: .infinity)
                     .contentShape(Rectangle())
                     .gesture(
                         DragGesture(minimumDistance: 0)
@@ -39,14 +43,14 @@ struct ProgressViewBar: View {
                             }
                     )
                 }
-                .frame(height: 12)
+                .frame(height: 20)
 
                 HStack {
                     Text(PlayerViewModel.timeString(progress))
                     Spacer()
                     Text("-" + PlayerViewModel.timeString(max(duration - progress, 0)))
                 }
-                .font(.system(size: 13, weight: .regular, design: .monospaced))
+                .font(.system(size: 11, weight: .regular, design: .monospaced))
                 .foregroundStyle(AppTheme.secondaryText)
             }
         }

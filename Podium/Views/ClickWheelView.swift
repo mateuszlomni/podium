@@ -21,82 +21,52 @@ struct ClickWheelView: View {
 
             ZStack {
                 Circle()
-                    .fill(
-                        RadialGradient(
-                            colors: [
-                                Color.white.opacity(0.055),
-                                Color.white.opacity(0.018),
-                                Color.black.opacity(0.65)
-                            ],
-                            center: .center,
-                            startRadius: 20,
-                            endRadius: size / 2
-                        )
-                    )
+                    .fill(.white.opacity(0.035))
+                    .overlay {
+                        Circle()
+                            .stroke(.white.opacity(0.08), lineWidth: 1)
+                    }
 
-                Circle()
-                    .stroke(
-                        LinearGradient(
-                            colors: [
-                                AppTheme.accent.opacity(0.95),
-                                .white.opacity(0.2),
-                                AppTheme.accent.opacity(0.75)
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ),
-                        lineWidth: 1.4
-                    )
-                    .shadow(color: AppTheme.accent.opacity(0.28), radius: 12)
-
-                Button("MENU", action: onMenu)
-                    .buttonStyle(.plain)
-                    .font(.system(size: 19, weight: .medium))
+                wheelButton("line.3.horizontal", label: "Menu", action: onMenu)
                     .offset(y: -size * 0.37)
 
-                Button(action: onPrevious) {
-                    Image(systemName: "backward.end.fill")
-                        .font(.system(size: 28, weight: .semibold))
-                }
-                .buttonStyle(.plain)
-                .offset(x: -size * 0.37)
+                wheelButton("backward.end.fill", label: "Previous", action: onPrevious)
+                    .offset(x: -size * 0.37)
 
-                Button(action: onNext) {
-                    Image(systemName: "forward.end.fill")
-                        .font(.system(size: 28, weight: .semibold))
-                }
-                .buttonStyle(.plain)
-                .offset(x: size * 0.37)
+                wheelButton("forward.end.fill", label: "Next", action: onNext)
+                    .offset(x: size * 0.37)
 
-                Button(action: onPlayPause) {
-                    Image(systemName: isPlaying ? "pause.fill" : "play.fill")
-                        .font(.system(size: 28, weight: .semibold))
-                }
-                .buttonStyle(.plain)
-                .offset(y: size * 0.37)
+                wheelButton(isPlaying ? "pause.fill" : "play.fill", label: isPlaying ? "Pause" : "Play", action: onPlayPause)
+                    .offset(y: size * 0.37)
 
                 Button(action: onSelect) {
                     Circle()
-                        .fill(
-                            LinearGradient(
-                                colors: [.white.opacity(0.09), .black.opacity(0.35)],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
+                        .fill(.white.opacity(0.05))
                         .overlay {
                             Circle()
-                                .stroke(.white.opacity(0.18), lineWidth: 1)
+                                .stroke(.white.opacity(0.08), lineWidth: 1)
                         }
                 }
                 .buttonStyle(.plain)
                 .frame(width: size * 0.34, height: size * 0.34)
+                .accessibilityLabel("Select")
             }
             .frame(width: size, height: size)
-            .foregroundStyle(.white.opacity(0.92))
+            .foregroundStyle(.white.opacity(0.75))
             .contentShape(Circle())
             .gesture(wheelGesture(in: size))
         }
+    }
+
+    private func wheelButton(_ symbol: String, label: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: symbol)
+                .font(.system(size: 19, weight: .regular))
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(label)
     }
 
     private func wheelGesture(in size: CGFloat) -> some Gesture {

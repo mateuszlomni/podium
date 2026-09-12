@@ -1,7 +1,13 @@
 import SwiftUI
 
+enum ArtworkStyle: String {
+    case coverFlow
+    case vinyl
+}
+
 struct PodiumPlayerView: View {
     @EnvironmentObject private var player: PlayerViewModel
+    @AppStorage("artworkStyle") private var artworkStyle = ArtworkStyle.coverFlow
 
     var body: some View {
         GeometryReader { proxy in
@@ -12,16 +18,12 @@ struct PodiumPlayerView: View {
                 390
             )
 
-            VStack(spacing: compact ? 12 : 16) {
-                HeaderView()
+            VStack(spacing: compact ? 12 : 18) {
+                HeaderView(artworkStyle: $artworkStyle)
 
-                CoverFlowView(
-                    albums: player.albums,
-                    selectedIndex: player.selectedAlbumIndex,
-                    playingIndex: player.playingAlbumIndex,
-                    isPlaying: player.isPlaying
-                )
-                .frame(maxHeight: .infinity)
+                artwork
+                    .frame(maxHeight: .infinity)
+                    .animation(.smooth(duration: 0.3), value: player.selectedAlbumIndex)
 
                 TrackInfoView()
 
@@ -37,40 +39,61 @@ struct PodiumPlayerView: View {
                     onRotationStep: player.wheelDidMove
                 )
                 .frame(width: wheelSize, height: wheelSize)
-
-                if proxy.size.height >= 800 {
-                    Text("A HIGHER WAY TO LISTEN")
-                        .font(.system(size: 10, weight: .medium))
-                        .tracking(4)
-                        .foregroundStyle(AppTheme.secondaryText)
-                }
             }
             .padding(.horizontal, AppTheme.horizontalPadding)
-            .padding(.top, 10)
+            .padding(.top, 6)
             .padding(.bottom, compact ? 8 : 14)
+        }
+    }
+
+    @ViewBuilder
+    private var artwork: some View {
+        switch artworkStyle {
+        case .coverFlow:
+            CoverFlowView(
+                albums: player.albums,
+                selectedIndex: player.selectedAlbumIndex,
+                playingIndex: player.playingAlbumIndex,
+                isPlaying: player.isPlaying
+            )
+            .transition(.opacity)
+        case .vinyl:
+            let index = player.selectedAlbumIndex
+            let album = player.albums.indices.contains(index) ? player.albums[index] : nil
+
+            VinylView(
+                album: album,
+                isSpinning: player.isPlaying && index == player.playingAlbumIndex
+            )
+            .id(album?.id ?? "podium:empty")
+            .transition(.opacity)
         }
     }
 }
 
 private struct HeaderView: View {
+    @Binding var artworkStyle: ArtworkStyle
+
     var body: some View {
-        HStack(alignment: .top) {
-            VStack(alignment: .leading, spacing: 3) {
-                Text("Podium")
-                    .font(.system(size: 30, weight: .light, design: .rounded))
-                Text("FOR SPOTIFY")
-                    .font(.system(size: 10, weight: .semibold))
-                    .tracking(4)
-                    .foregroundStyle(AppTheme.secondaryText)
-            }
+        HStack {
+            Text("Podium")
+                .font(.system(size: 24, weight: .light, design: .rounded))
 
             Spacer()
 
-            Text("MUSIC\nLIVES\nON")
-                .font(.system(size: 10, weight: .medium))
-                .tracking(4)
-                .multilineTextAlignment(.trailing)
-                .foregroundStyle(AppTheme.secondaryText)
+            Button {
+                withAnimation(.smooth(duration: 0.35)) {
+                    artworkStyle = artworkStyle == .coverFlow ? .vinyl : .coverFlow
+                }
+            } label: {
+                Image(systemName: artworkStyle == .coverFlow ? "opticaldisc" : "square.stack")
+                    .font(.system(size: 18, weight: .light))
+                    .foregroundStyle(AppTheme.secondaryText)
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(artworkStyle == .coverFlow ? "Show vinyl" : "Show covers")
         }
     }
 }
@@ -79,64 +102,41 @@ private struct TrackInfoView: View {
     @EnvironmentObject private var player: PlayerViewModel
 
     var body: some View {
-        HStack(alignment: .center, spacing: 14) {
-            VStack(spacing: 4) {
-                Text(player.currentTrack?.title ?? "Not Playing")
-                    .font(.system(size: 28, weight: .medium, design: .rounded))
-                    .minimumScaleFactor(0.75)
-                Text(subtitle)
-                    .font(.system(size: 17, weight: .regular))
+        VStack(spacing: 6) {
+            switch player.connection {
+            case .connected:
+                Text(player.currentTrack?.title ?? "")
+                    .font(.system(size: 22, weight: .medium, design: .rounded))
+                    .minimumScaleFactor(0.8)
+                Text(player.currentTrack?.artist ?? "")
+                    .font(.system(size: 15))
                     .foregroundStyle(AppTheme.secondaryText)
-            }
-            .lineLimit(1)
-            .frame(maxWidth: .infinity)
-
-            ConnectionBadge(connection: player.connection, onConnect: player.connect)
-        }
-    }
-
-    private var subtitle: String {
-        if case .failed(let message) = player.connection {
-            return message
-        }
-        return player.currentTrack?.artist ?? "Connect Spotify to start"
-    }
-}
-
-private struct ConnectionBadge: View {
-    let connection: RemoteConnection
-    let onConnect: () -> Void
-
-    var body: some View {
-        switch connection {
-        case .connected:
-            label("Spotify")
-                .foregroundStyle(AppTheme.spotify)
-        case .connecting:
-            HStack(spacing: 7) {
+            case .connecting:
                 ProgressView()
                     .controlSize(.small)
-                Text("Connecting")
-                    .font(.system(size: 13, weight: .semibold))
-            }
-            .foregroundStyle(AppTheme.secondaryText)
-        case .disconnected, .failed:
-            Button(action: onConnect) {
-                label(connection == .disconnected ? "Connect" : "Retry")
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 7)
+            case .disconnected, .failed:
+                Button(action: player.connect) {
+                    HStack(spacing: 7) {
+                        Image(systemName: "dot.radiowaves.left.and.right")
+                        Text("Connect")
+                    }
+                    .font(.system(size: 14, weight: .semibold))
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
                     .background(AppTheme.spotify.opacity(0.14), in: Capsule())
-            }
-            .buttonStyle(.plain)
-            .foregroundStyle(AppTheme.spotify)
-        }
-    }
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(AppTheme.spotify)
 
-    private func label(_ title: String) -> some View {
-        HStack(spacing: 7) {
-            Image(systemName: "dot.radiowaves.left.and.right")
-            Text(title)
-                .font(.system(size: 13, weight: .semibold))
+                if case .failed(let message) = player.connection {
+                    Text(message)
+                        .font(.system(size: 12))
+                        .foregroundStyle(AppTheme.secondaryText)
+                }
+            }
         }
+        .lineLimit(1)
+        .frame(maxWidth: .infinity)
+        .frame(height: 58)
     }
 }

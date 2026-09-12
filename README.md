@@ -1,11 +1,13 @@
 # Podium
 
-A click-wheel music player for iPhone that controls the Spotify app, written in SwiftUI.
+A minimal click-wheel music player for iPhone that controls the Spotify app, written in SwiftUI.
 
 ## Features
 
-- Full-screen dark UI that fits on one screen
-- Carousel of Spotify's recommended content with artwork and a now-playing indicator
+- Ultra-minimal dark UI that fits on one screen
+- Two artwork styles, switched with the icon in the top-right corner:
+  - a carousel of Spotify's recommended content with a now-playing indicator
+  - a vinyl record that spins while playing, with the album art as its label
 - Circular wheel: rotate to browse, press to play, with haptic feedback
 - Play/pause, previous/next and seeking with live playback progress
 - Spotify App Remote connection: authorization, player state and controls
@@ -47,11 +49,12 @@ Notes:
 ## Controls
 
 - Connect / center button while disconnected: connect to Spotify
-- Rotate the wheel: browse the carousel
+- Top-right icon: switch between the carousel and the vinyl record
+- Rotate the wheel: browse
 - Center button: play the browsed item (or play/pause if it is the one playing)
-- MENU: jump back to what is playing
+- Top of the wheel: jump back to what is playing
 - Previous / next: change track (previous restarts the current track after 3 seconds)
-- Bottom button: play / pause
+- Bottom of the wheel: play / pause
 - Drag the progress bar: seek
 
 ## Architecture
@@ -65,8 +68,9 @@ Notes:
 - `MockLibrary`: demo albums and tracks
 - `ClickWheelView`: angular finger tracking + haptics
 - `CoverFlowView`: carousel
+- `VinylView`: spinning record with the album art as its label
 - `ProgressViewBar`: scrubbing
-- `PodiumPlayerView`: main composition
+- `PodiumPlayerView`: main composition and artwork style toggle
 
 ## Disclaimer
 
