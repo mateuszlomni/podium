@@ -105,7 +105,7 @@ private struct VinylLayout: View {
     @State private var feedbackSymbol: String?
 
     private var nowPlayingAlbum: AlbumCard? {
-        player.playingAlbumIndex.map { player.albums[$0] }
+        player.nowPlayingCard
     }
 
     var body: some View {

@@ -21,11 +21,14 @@ final class SpotifyRemoteManager: NSObject, SpotifyRemoteControlling {
     var onConnectionChange: ((RemoteConnection) -> Void)?
     var onStateChange: ((PlayerState) -> Void)?
     var onLibraryChange: (([AlbumCard]) -> Void)?
+    var onArtworkChange: ((UIImage?) -> Void)?
 
     private let appRemote: SPTAppRemote
     private var attempt = Attempt.silent
     private var recommended: [AlbumCard] = []
     private var nowPlayingCard: AlbumCard?
+    private var artworkAlbumURI: String?
+    private var trackArtwork: UIImage?
 
     init(clientID: String, redirectURL: URL) {
         appRemote = SPTAppRemote(
@@ -137,6 +140,28 @@ final class SpotifyRemoteManager: NSObject, SpotifyRemoteControlling {
     private func apply(_ state: SPTAppRemotePlayerState) {
         updateNowPlayingCard(for: state)
         onStateChange?(PlayerState(state))
+        updateTrackArtwork(for: state.track)
+    }
+
+    private func updateTrackArtwork(for track: SPTAppRemoteTrack) {
+        let albumURI = track.album.uri
+        guard albumURI != artworkAlbumURI else { return }
+
+        artworkAlbumURI = albumURI
+        trackArtwork = nil
+        onArtworkChange?(nil)
+
+        appRemote.imageAPI?.fetchImage(forItem: track, with: CGSize(width: 600, height: 600)) { [weak self] result, _ in
+            guard let self, artworkAlbumURI == albumURI, let image = result as? UIImage else { return }
+
+            trackArtwork = image
+            onArtworkChange?(image)
+
+            if nowPlayingCard?.uri == albumURI {
+                nowPlayingCard?.artwork = image
+                publishLibrary()
+            }
+        }
     }
 
     private func loadRecommendedContent() {
@@ -169,8 +194,10 @@ final class SpotifyRemoteManager: NSObject, SpotifyRemoteControlling {
         guard nowPlayingCard?.uri != album.uri else { return }
 
         nowPlayingCard = AlbumCard(uri: album.uri, title: album.name, subtitle: state.track.artist.name)
+        if artworkAlbumURI == album.uri {
+            nowPlayingCard?.artwork = trackArtwork
+        }
         publishLibrary()
-        fetchArtwork(for: state.track, cardURI: album.uri)
     }
 
     private func publishLibrary() {
@@ -179,15 +206,10 @@ final class SpotifyRemoteManager: NSObject, SpotifyRemoteControlling {
 
     private func fetchArtwork(for item: SPTAppRemoteImageRepresentable, cardURI: String) {
         appRemote.imageAPI?.fetchImage(forItem: item, with: CGSize(width: 600, height: 600)) { [weak self] result, _ in
-            guard let self, let image = result as? UIImage else { return }
+            guard let self, let image = result as? UIImage,
+                  let index = recommended.firstIndex(where: { $0.uri == cardURI }) else { return }
 
-            if let index = recommended.firstIndex(where: { $0.uri == cardURI }) {
-                recommended[index].artwork = image
-            } else if nowPlayingCard?.uri == cardURI {
-                nowPlayingCard?.artwork = image
-            } else {
-                return
-            }
+            recommended[index].artwork = image
             publishLibrary()
         }
     }

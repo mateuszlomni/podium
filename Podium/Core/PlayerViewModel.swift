@@ -1,11 +1,13 @@
 import Foundation
 import Combine
+import UIKit
 
 @MainActor
 final class PlayerViewModel: ObservableObject {
     @Published private(set) var connection: RemoteConnection = .disconnected
     @Published private(set) var albums: [AlbumCard] = []
     @Published private(set) var currentTrack: Track?
+    @Published private(set) var trackArtwork: UIImage?
     @Published private(set) var isPlaying = false
     @Published private(set) var selectedAlbumIndex = 0
     @Published private var positionAnchor = PositionAnchor(position: 0, date: .now)
@@ -26,6 +28,10 @@ final class PlayerViewModel: ObservableObject {
         remote.onStateChange = { [weak self] state in
             self?.apply(state)
         }
+        remote.onArtworkChange = { [weak self] artwork in
+            self?.trackArtwork = artwork
+            self?.publishNowPlaying()
+        }
         remote.reconnect()
     }
 
@@ -40,6 +46,19 @@ final class PlayerViewModel: ObservableObject {
     var playingAlbumIndex: Int? {
         albums.firstIndex { $0.uri == contextURI }
             ?? albums.firstIndex { $0.uri == currentTrack?.albumURI }
+    }
+
+    /// The playing card, showing the current track's album art once the remote has loaded it.
+    var nowPlayingCard: AlbumCard? {
+        var card = playingAlbumIndex.map { albums[$0] }
+
+        if let trackArtwork, let currentTrack {
+            if card == nil {
+                card = AlbumCard(uri: currentTrack.albumURI, title: currentTrack.album, subtitle: currentTrack.artist)
+            }
+            card?.artwork = trackArtwork
+        }
+        return card
     }
 
     func progress(at date: Date) -> TimeInterval {
@@ -178,7 +197,7 @@ final class PlayerViewModel: ObservableObject {
             track: currentTrack,
             isPlaying: isPlaying,
             position: progress(at: .now),
-            album: playingAlbumIndex.map { albums[$0] }
+            album: nowPlayingCard
         )
     }
 }

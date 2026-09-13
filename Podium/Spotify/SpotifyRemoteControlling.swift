@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 enum RemoteConnection: Equatable {
     case disconnected
@@ -15,6 +16,8 @@ protocol SpotifyRemoteControlling: AnyObject {
     /// changes only, not continuously while playing.
     var onStateChange: ((PlayerState) -> Void)? { get set }
     var onLibraryChange: (([AlbumCard]) -> Void)? { get set }
+    /// Album art of the current track: nil while it loads or when the remote has none.
+    var onArtworkChange: ((UIImage?) -> Void)? { get set }
 
     /// User-initiated: may switch to the Spotify app to authorize.
     func connect()

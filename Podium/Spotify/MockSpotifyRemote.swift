@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 final class MockSpotifyRemote: SpotifyRemoteControlling {
     private(set) var connection: RemoteConnection = .disconnected
@@ -6,6 +7,7 @@ final class MockSpotifyRemote: SpotifyRemoteControlling {
     var onConnectionChange: ((RemoteConnection) -> Void)?
     var onStateChange: ((PlayerState) -> Void)?
     var onLibraryChange: (([AlbumCard]) -> Void)?
+    var onArtworkChange: ((UIImage?) -> Void)?
 
     private var queue: [Track] = []
     private var index = 0
