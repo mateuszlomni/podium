@@ -64,10 +64,10 @@ private struct Record: View {
             Circle()
                 .fill(Color(white: 0.05))
 
-            ForEach(0..<16, id: \.self) { groove in
+            ForEach(0..<26, id: \.self) { groove in
                 Circle()
-                    .stroke(.white.opacity(groove.isMultiple(of: 4) ? 0.07 : 0.03), lineWidth: 1)
-                    .padding(side * (0.05 + CGFloat(groove) * 0.02))
+                    .stroke(.white.opacity(groove.isMultiple(of: 5) ? 0.07 : 0.03), lineWidth: 1)
+                    .padding(side * (0.05 + CGFloat(groove) * 0.012))
             }
 
             RecordLabel(album: album)

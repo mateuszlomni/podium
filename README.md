@@ -5,10 +5,10 @@ A minimal click-wheel music player for iPhone that controls the Spotify app, wri
 ## Features
 
 - Ultra-minimal dark UI that fits on one screen
-- Two artwork styles, switched with the icon in the top-right corner:
-  - a carousel of Spotify's recommended content with a now-playing indicator
-  - a vinyl record that spins while playing, with the album art as its label
-- Circular wheel: rotate to browse, press to play, with haptic feedback
+- Two styles, switched with the icon in the top-right corner:
+  - a click wheel with a carousel of Spotify's recommended content and a now-playing indicator
+  - a full-screen vinyl record that spins while playing, with the album art as its label and no on-screen buttons
+- Haptic feedback on the wheel and on record gestures
 - Play/pause, previous/next and seeking with live playback progress
 - Spotify App Remote connection: authorization, player state and controls
 - Mock remote that simulates playback, so the UI runs in the Simulator without Spotify
@@ -48,14 +48,24 @@ Notes:
 
 ## Controls
 
-- Connect / center button while disconnected: connect to Spotify
-- Top-right icon: switch between the carousel and the vinyl record
-- Rotate the wheel: browse
+Both styles:
+
+- Top-right icon: switch between the click wheel and the vinyl record
+- Connect: connect to Spotify
+- Drag the progress bar: seek
+
+Click wheel:
+
+- Rotate the wheel: browse the carousel
 - Center button: play the browsed item (or play/pause if it is the one playing)
 - Top of the wheel: jump back to what is playing
 - Previous / next: change track (previous restarts the current track after 3 seconds)
 - Bottom of the wheel: play / pause
-- Drag the progress bar: seek
+
+Vinyl:
+
+- Tap the record: play / pause
+- Swipe left / right on the record: next / previous track
 
 ## Architecture
 
@@ -70,7 +80,7 @@ Notes:
 - `CoverFlowView`: carousel
 - `VinylView`: spinning record with the album art as its label
 - `ProgressViewBar`: scrubbing
-- `PodiumPlayerView`: main composition and artwork style toggle
+- `PodiumPlayerView`: style toggle, click wheel layout and full-screen vinyl layout with record gestures
 
 ## Disclaimer
 
