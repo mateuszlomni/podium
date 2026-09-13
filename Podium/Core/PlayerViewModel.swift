@@ -11,6 +11,7 @@ final class PlayerViewModel: ObservableObject {
     @Published private var positionAnchor = PositionAnchor(position: 0, date: .now)
 
     private let remote: SpotifyRemoteControlling
+    private let nowPlaying = NowPlayingPublisher()
     private var contextURI: String?
 
     init(remote: SpotifyRemoteControlling) {
@@ -72,6 +73,7 @@ final class PlayerViewModel: ObservableObject {
         setPosition(progress(at: .now))
         isPlaying.toggle()
         isPlaying ? remote.play() : remote.pause()
+        publishNowPlaying()
     }
 
     func nextTrack() {
@@ -88,6 +90,7 @@ final class PlayerViewModel: ObservableObject {
         guard isConnected, let currentTrack else { return }
         setPosition(currentTrack.duration * min(max(fraction, 0), 1))
         remote.seek(to: positionAnchor.position)
+        publishNowPlaying()
     }
 
     func wheelDidMove(steps: Int) {
@@ -149,6 +152,7 @@ final class PlayerViewModel: ObservableObject {
         } else {
             selectedAlbumIndex = min(selectedAlbumIndex, max(albums.count - 1, 0))
         }
+        publishNowPlaying()
     }
 
     private func apply(_ state: PlayerState) {
@@ -162,10 +166,20 @@ final class PlayerViewModel: ObservableObject {
         if let playingAlbumIndex, playingAlbumIndex != previousPlayingIndex {
             selectedAlbumIndex = playingAlbumIndex
         }
+        publishNowPlaying()
     }
 
     private func setPosition(_ position: TimeInterval) {
         positionAnchor = PositionAnchor(position: position, date: .now)
+    }
+
+    private func publishNowPlaying() {
+        nowPlaying.publish(
+            track: currentTrack,
+            isPlaying: isPlaying,
+            position: progress(at: .now),
+            album: playingAlbumIndex.map { albums[$0] }
+        )
     }
 }
 

@@ -17,6 +17,8 @@
 	<array>
 		<string>spotify</string>
 	</array>
+	<key>PodiumAppGroup</key>
+	<string>$(PODIUM_APP_GROUP)</string>
 	<key>SpotifyClientID</key>
 	<string>$(SPOTIFY_CLIENT_ID)</string>
 </dict>

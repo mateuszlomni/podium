@@ -8,6 +8,7 @@ A minimal click-wheel music player for iPhone that controls the Spotify app, wri
 - Two styles, switched with the icon in the top-right corner:
   - a click wheel with a carousel of Spotify's recommended content and a now-playing indicator
   - a full-screen vinyl record that spins while playing, with the album art as its label and no on-screen buttons
+- Home Screen and Lock Screen widgets: a small record, a medium record with the track and live progress, and circular, rectangular and inline Lock Screen styles
 - Haptic feedback on the wheel and on record gestures
 - Play/pause, previous/next and seeking with live playback progress
 - Spotify App Remote connection: authorization, player state and controls
@@ -35,7 +36,7 @@ The Spotify iOS SDK (`SpotifyiOS`) is added through Swift Package Manager and re
 
 1. Create an app at https://developer.spotify.com/dashboard and select **iOS** under APIs/SDKs.
 2. Add the Redirect URI `podium-player://spotify-login-callback`, and your bundle ID under **iOS app bundles**.
-3. Copy `Config/Secrets.example.xcconfig` to `Config/Secrets.xcconfig` and fill in `PRODUCT_BUNDLE_IDENTIFIER`, `DEVELOPMENT_TEAM` and `SPOTIFY_CLIENT_ID`. Git ignores this file.
+3. Copy `Config/Secrets.example.xcconfig` to `Config/Secrets.xcconfig` and fill in `PODIUM_BUNDLE_ID`, `DEVELOPMENT_TEAM` and `SPOTIFY_CLIENT_ID`. Git ignores this file.
 4. Connect your iPhone, turn on Developer Mode, and Run from Xcode.
 5. Start playing something in Spotify, open Podium and tap **Connect**. Spotify opens to authorize and switches back.
 
@@ -45,6 +46,12 @@ Notes:
 - With a free Apple developer account, apps installed on a device expire after 7 days; Run from Xcode again to reinstall.
 - The access token is kept in memory only. After Podium is relaunched, tapping Connect authorizes again, which briefly opens Spotify and resumes playback.
 - The Simulator always uses `MockSpotifyRemote`. Launch arguments `-PodiumRemote spotify` / `-PodiumRemote mock` override the choice.
+
+## Widgets
+
+Add them from the Home Screen or Lock Screen editor (search for Podium). The widgets show what Podium last reported: the app updates them when the track, pause state or position changes, and the progress bar advances on its own in between. Tapping a widget opens Podium.
+
+The app and the widget extension share data through the app group `group.<PODIUM_BUNDLE_ID>`, which Xcode sets up automatically, also with a free Apple account.
 
 ## Controls
 
@@ -81,6 +88,9 @@ Vinyl:
 - `VinylView`: spinning record with the album art as its label
 - `ProgressViewBar`: scrubbing
 - `PodiumPlayerView`: style toggle, click wheel layout and full-screen vinyl layout with record gestures
+- `NowPlayingPublisher`: writes what's playing to the app group and reloads the widgets
+- `Shared/NowPlayingStore`: now-playing snapshot and label artwork shared by the app and the widgets
+- `PodiumWidgets`: widget extension (small, medium and Lock Screen widgets)
 
 ## Disclaimer
 

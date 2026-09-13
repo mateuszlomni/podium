@@ -8,11 +8,37 @@
 
 /* Begin PBXBuildFile section */
 		A10000000000000000000013 /* SpotifyiOS in Frameworks */ = {isa = PBXBuildFile; productRef = A10000000000000000000012 /* SpotifyiOS */; };
+		A10000000000000000000022 /* PodiumWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A10000000000000000000016 /* PodiumWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A10000000000000000000023 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A10000000000000000000009 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A1000000000000000000001A;
+			remoteInfo = PodiumWidgetsExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A10000000000000000000021 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A10000000000000000000022 /* PodiumWidgetsExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		A10000000000000000000001 /* Podium.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Podium.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A10000000000000000000014 /* Podium.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Podium.xcconfig; sourceTree = "<group>"; };
+		A10000000000000000000016 /* PodiumWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PodiumWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -20,8 +46,17 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
+				Podium.entitlements,
 			);
 			target = A10000000000000000000006 /* Podium */;
+		};
+		A10000000000000000000019 /* Exceptions for "PodiumWidgets" folder in "PodiumWidgetsExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+				PodiumWidgets.entitlements,
+			);
+			target = A1000000000000000000001A /* PodiumWidgetsExtension */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -32,6 +67,19 @@
 				A10000000000000000000010 /* Exceptions for "Podium" folder in "Podium" target */,
 			);
 			path = Podium;
+			sourceTree = "<group>";
+		};
+		A10000000000000000000017 /* PodiumWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A10000000000000000000019 /* Exceptions for "PodiumWidgets" folder in "PodiumWidgetsExtension" target */,
+			);
+			path = PodiumWidgets;
+			sourceTree = "<group>";
+		};
+		A10000000000000000000018 /* Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Shared;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -45,6 +93,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A1000000000000000000001C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -53,6 +108,8 @@
 			children = (
 				A10000000000000000000015 /* Config */,
 				A10000000000000000000002 /* Podium */,
+				A10000000000000000000017 /* PodiumWidgets */,
+				A10000000000000000000018 /* Shared */,
 				A10000000000000000000005 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -61,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				A10000000000000000000001 /* Podium.app */,
+				A10000000000000000000016 /* PodiumWidgetsExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -83,13 +141,16 @@
 				A10000000000000000000007 /* Sources */,
 				A10000000000000000000003 /* Frameworks */,
 				A10000000000000000000008 /* Resources */,
+				A10000000000000000000021 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				A10000000000000000000024 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				A10000000000000000000002 /* Podium */,
+				A10000000000000000000018 /* Shared */,
 			);
 			name = Podium;
 			packageProductDependencies = (
@@ -98,6 +159,29 @@
 			productName = Podium;
 			productReference = A10000000000000000000001 /* Podium.app */;
 			productType = "com.apple.product-type.application";
+		};
+		A1000000000000000000001A /* PodiumWidgetsExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1000000000000000000001E /* Build configuration list for PBXNativeTarget "PodiumWidgetsExtension" */;
+			buildPhases = (
+				A1000000000000000000001B /* Sources */,
+				A1000000000000000000001C /* Frameworks */,
+				A1000000000000000000001D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				A10000000000000000000017 /* PodiumWidgets */,
+				A10000000000000000000018 /* Shared */,
+			);
+			name = PodiumWidgetsExtension;
+			packageProductDependencies = (
+			);
+			productName = PodiumWidgetsExtension;
+			productReference = A10000000000000000000016 /* PodiumWidgetsExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -110,6 +194,9 @@
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					A10000000000000000000006 = {
+						CreatedOnToolsVersion = 26.0;
+					};
+					A1000000000000000000001A = {
 						CreatedOnToolsVersion = 26.0;
 					};
 				};
@@ -132,12 +219,20 @@
 			projectRoot = "";
 			targets = (
 				A10000000000000000000006 /* Podium */,
+				A1000000000000000000001A /* PodiumWidgetsExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		A10000000000000000000008 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1000000000000000000001D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -154,7 +249,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A1000000000000000000001B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A10000000000000000000024 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A1000000000000000000001A /* PodiumWidgetsExtension */;
+			targetProxy = A10000000000000000000023 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		A1000000000000000000000A /* Debug */ = {
@@ -163,6 +273,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Podium/Podium.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
@@ -200,6 +311,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Podium/Podium.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
@@ -350,6 +462,58 @@
 			};
 			name = Release;
 		};
+		A1000000000000000000001F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A10000000000000000000014 /* Podium.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = PodiumWidgets/PodiumWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PodiumWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Podium;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PODIUM_BUNDLE_ID).widgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		A10000000000000000000020 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A10000000000000000000014 /* Podium.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = PodiumWidgets/PodiumWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PodiumWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Podium;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PODIUM_BUNDLE_ID).widgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -367,6 +531,15 @@
 			buildConfigurations = (
 				A1000000000000000000000D /* Debug */,
 				A1000000000000000000000E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1000000000000000000001E /* Build configuration list for PBXNativeTarget "PodiumWidgetsExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1000000000000000000001F /* Debug */,
+				A10000000000000000000020 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

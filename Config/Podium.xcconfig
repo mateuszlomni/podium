@@ -1,8 +1,11 @@
 // Shared build settings. Personal values (bundle ID, Apple team, Spotify Client ID)
 // belong in Secrets.xcconfig, which git ignores; copy Secrets.example.xcconfig to create it.
 
-PRODUCT_BUNDLE_IDENTIFIER = com.example.podium
+PODIUM_BUNDLE_ID = com.example.podium
 DEVELOPMENT_TEAM =
 SPOTIFY_CLIENT_ID =
 
 #include? "Secrets.xcconfig"
+
+PRODUCT_BUNDLE_IDENTIFIER = $(PODIUM_BUNDLE_ID)
+PODIUM_APP_GROUP = group.$(PODIUM_BUNDLE_ID)
