@@ -2,6 +2,14 @@
 
 A minimal click-wheel music player for iPhone that controls the Spotify app, written in SwiftUI.
 
+<p align="center">
+  <img src=".github/readme/wheel.gif" width="240" alt="Turning the click wheel flips the album carousel">
+  &nbsp;&nbsp;
+  <img src=".github/readme/vinyl.gif" width="240" alt="Vinyl mode: the record spins with the album cover as its label">
+</p>
+
+<p align="center"><a href="https://podium.inteliquest.pl">podium.inteliquest.pl</a></p>
+
 ## Features
 
 - Ultra-minimal dark UI that fits on one screen
