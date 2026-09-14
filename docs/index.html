@@ -1,0 +1,926 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%230d0d0e'/%3E%3Ccircle cx='50' cy='50' r='18' fill='%2359667a'/%3E%3Ccircle cx='50' cy='50' r='3' fill='%2306080a'/%3E%3C/svg%3E">
+<title>Podium for iPhone</title>
+<meta name="description" content="Podium is a free, open-source iPhone app with a click wheel, a spinning record and widgets for the music playing in Spotify.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;600;700&display=swap">
+<style>
+  :root {
+    /* From the app's AppTheme: the same ground, text and accent. */
+    --ground: #06080a;
+    --shellac: #0d1014;
+    --label: #eef1f5;
+    --sleeve: #8d949d;
+    --signal: #a8d1ff;
+    --hair: rgba(238, 241, 245, 0.09);
+
+    --display: ui-rounded, "SF Pro Rounded", "Nunito", system-ui, sans-serif;
+    --text: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Segoe UI", Roboto, sans-serif;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+
+    --gutter: clamp(20px, 5vw, 56px);
+    --page: 1160px;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { background: var(--ground); }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--label);
+    font: 400 1.0625rem/1.55 var(--text);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  img { max-width: 100%; display: block; }
+
+  a { color: inherit; }
+
+  a:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--signal);
+    outline-offset: 4px;
+    border-radius: 6px;
+  }
+
+  h1, h2, h3 {
+    margin: 0;
+    font-family: var(--display);
+    text-wrap: balance;
+  }
+
+  p { margin: 0; }
+
+  .wrap {
+    width: min(var(--page), 100%);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  .mono {
+    font-family: var(--mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+    color: var(--sleeve);
+  }
+
+  /* Top bar */
+
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding-block: 22px;
+  }
+
+  .bar nav {
+    display: flex;
+    gap: clamp(16px, 3vw, 32px);
+  }
+
+  .bar nav a {
+    text-decoration: none;
+    color: var(--sleeve);
+    font-size: 0.9375rem;
+    transition: color 0.2s;
+  }
+
+  .bar nav a:hover { color: var(--label); }
+
+  /* Hero: the record is wider than its column and runs off the edge, like the app's vinyl mode. */
+
+  .hero {
+    position: relative;
+    overflow: clip;
+    padding-bottom: clamp(56px, 9vw, 120px);
+  }
+
+  .hero .wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(24px, 4vw, 48px);
+    min-height: clamp(520px, 62vw, 720px);
+  }
+
+  .hero-copy {
+    display: grid;
+    gap: 22px;
+    position: relative;
+    z-index: 1;
+    padding-top: clamp(24px, 5vw, 64px);
+  }
+
+  .wordmark {
+    font-weight: 300;
+    font-size: clamp(4.5rem, 13vw, 10.5rem);
+    line-height: 0.9;
+    letter-spacing: -0.035em;
+    margin-left: -0.05em;
+  }
+
+  .lead {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(1.375rem, 2.4vw, 1.875rem);
+    line-height: 1.22;
+    max-width: 20ch;
+    text-wrap: balance;
+  }
+
+  .hero-copy .body {
+    color: var(--sleeve);
+    max-width: 46ch;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px 26px;
+    margin-top: 8px;
+  }
+
+  .button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 22px;
+    border-radius: 999px;
+    background: var(--label);
+    color: var(--ground);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    text-decoration: none;
+    transition: transform 0.2s, background 0.2s;
+  }
+
+  .button:hover { background: #fff; transform: translateY(-1px); }
+
+  .button svg { width: 18px; height: 18px; }
+
+  .link {
+    color: var(--label);
+    font-weight: 500;
+    font-size: 0.9375rem;
+    text-decoration: none;
+    border-bottom: 1px solid var(--hair);
+    padding-bottom: 2px;
+    transition: border-color 0.2s;
+  }
+
+  .link:hover { border-color: var(--signal); }
+
+  .turntable {
+    position: relative;
+    justify-self: start;
+    width: clamp(440px, 56vw, 720px);
+    margin-right: calc(var(--gutter) * -1 - 16vw);
+  }
+
+  .record {
+    all: unset;
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 34px 60px rgba(0, 0, 0, 0.6);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .record:focus-visible {
+    outline: 2px solid var(--signal);
+    outline-offset: 6px;
+    border-radius: 50%;
+  }
+
+  .disc {
+    width: 100%;
+    height: 100%;
+    display: block;
+    animation: spin 1.8s linear infinite; /* 33&#8531; rpm */
+  }
+
+  .record.is-stopped .disc { animation-play-state: paused; }
+
+  /* The reflection stays put while the record turns underneath it. */
+  .sheen {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(from 60deg, transparent, rgba(255, 255, 255, 0.07), transparent, transparent, rgba(255, 255, 255, 0.05), transparent);
+    pointer-events: none;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .rpm {
+    position: absolute;
+    left: 2%;
+    bottom: -34px;
+    display: flex;
+    gap: 14px;
+    white-space: nowrap;
+  }
+
+  .rpm strong {
+    font-weight: 500;
+    color: var(--label);
+  }
+
+  /* Sections */
+
+  .section {
+    padding-block: clamp(72px, 10vw, 128px);
+    border-top: 1px solid var(--hair);
+  }
+
+  .section-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 16px clamp(24px, 5vw, 64px);
+    align-items: end;
+    margin-bottom: clamp(40px, 6vw, 72px);
+  }
+
+  .section-head h2 {
+    font-weight: 300;
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+  }
+
+  .section-head p {
+    color: var(--sleeve);
+    max-width: 52ch;
+  }
+
+  h3 {
+    font-weight: 600;
+    font-size: 1.5rem;
+    line-height: 1.2;
+  }
+
+  /* Two ways to play */
+
+  .modes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(40px, 6vw, 88px);
+  }
+
+  .mode {
+    margin: 0;
+    display: grid;
+    gap: 28px;
+    align-content: start;
+  }
+
+  .phone {
+    padding: 6px;
+    border-radius: 44px;
+    background: #16191e;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 40px 70px -30px rgba(0, 0, 0, 0.9);
+  }
+
+  .phone img {
+    width: 100%;
+    height: auto;
+    border-radius: 38px;
+  }
+
+  .mode .phone { width: min(290px, 100%); }
+
+  .mode figcaption {
+    display: grid;
+    gap: 14px;
+  }
+
+  .mode figcaption > p { color: var(--sleeve); }
+
+  .controls {
+    margin: 10px 0 0;
+    display: grid;
+    border-top: 1px solid var(--hair);
+  }
+
+  .controls div {
+    display: grid;
+    grid-template-columns: 7.5em minmax(0, 1fr);
+    gap: 12px;
+    padding-block: 9px;
+    border-bottom: 1px solid var(--hair);
+    font-size: 0.9375rem;
+  }
+
+  .controls dt {
+    font-family: var(--mono);
+    font-size: 0.8125rem;
+    color: var(--sleeve);
+    padding-top: 2px;
+  }
+
+  .controls dd { margin: 0; }
+
+  .note {
+    margin-top: clamp(32px, 5vw, 56px);
+  }
+
+  /* Widgets */
+
+  .shelf {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+    gap: clamp(40px, 5vw, 64px);
+    align-items: start;
+  }
+
+  .shelf-group {
+    display: grid;
+    gap: 16px;
+  }
+
+  .home,
+  .lock {
+    min-height: 320px;
+    border-radius: 36px;
+    box-shadow: inset 0 0 0 1px var(--hair);
+  }
+
+  .home {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    padding: clamp(20px, 3vw, 36px);
+    background:
+      radial-gradient(90% 120% at 100% 0%, rgba(168, 209, 255, 0.14), transparent 60%),
+      linear-gradient(160deg, #1c2430 0%, #0e1218 100%);
+  }
+
+  /* Home Screen widgets at their size in points. */
+  .home img {
+    width: auto;
+    height: 150px;
+    filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.45));
+  }
+
+  .lock {
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    gap: 2px;
+    padding: 30px 20px 34px;
+    color: rgba(255, 255, 255, 0.92);
+    background:
+      radial-gradient(110% 80% at 30% 0%, #4a5666 0%, transparent 62%),
+      linear-gradient(180deg, #232a35 0%, #0b0e13 100%);
+  }
+
+  .lock-date {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font: 600 1rem/1.2 var(--text);
+    color: rgba(255, 255, 255, 0.82);
+  }
+
+  .lock-date .glyph {
+    width: 15px;
+    height: 15px;
+  }
+
+  .glyph circle,
+  .glyph path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+  }
+
+  .lock-clock {
+    font: 600 clamp(4.75rem, 9vw, 6rem)/1 var(--display);
+    letter-spacing: -0.02em;
+  }
+
+  .lock-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 18px;
+  }
+
+  .acc-circular {
+    flex: none;
+    width: 72px;
+    height: 72px;
+  }
+
+  .ring-track,
+  .ring-fill {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 5;
+  }
+
+  .ring-track { stroke-opacity: 0.25; }
+
+  /* Near the end of the track, like the Home Screen widgets. */
+  .ring-fill {
+    stroke-linecap: round;
+    stroke-dasharray: 207.35;
+    stroke-dashoffset: 16.6;
+  }
+
+  .acc-rect {
+    width: 164px;
+    display: grid;
+    gap: 1px;
+    text-align: left;
+  }
+
+  .acc-rect strong { font: 600 1.0625rem/1.25 var(--text); }
+
+  .acc-rect span {
+    font-size: 0.8125rem;
+    line-height: 1.25;
+    color: rgba(255, 255, 255, 0.62);
+  }
+
+  .acc-bar {
+    display: block;
+    height: 4px;
+    margin-top: 7px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.25);
+    overflow: hidden;
+  }
+
+  .acc-bar b {
+    display: block;
+    width: 92%;
+    height: 100%;
+    background: currentColor;
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(24px, 4vw, 48px);
+    margin-top: clamp(56px, 8vw, 96px);
+    padding-top: 28px;
+    border-top: 1px solid var(--hair);
+  }
+
+  .facts div {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+  }
+
+  .facts h3 { font-size: 1.125rem; }
+
+  .facts p {
+    color: var(--sleeve);
+    font-size: 0.9375rem;
+  }
+
+  /* Build it yourself */
+
+  .build {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: clamp(40px, 6vw, 88px);
+    align-items: start;
+  }
+
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 40px;
+    counter-reset: step;
+  }
+
+  .steps li {
+    counter-increment: step;
+    display: grid;
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    gap: 10px 8px;
+  }
+
+  .steps li::before {
+    content: counter(step);
+    grid-row: 1 / span 3;
+    padding-top: 6px;
+    font-family: var(--mono);
+    font-size: 0.8125rem;
+    color: var(--signal);
+  }
+
+  .steps li > * { grid-column: 2; }
+
+  .steps h3 { font-size: 1.25rem; }
+
+  .steps p {
+    color: var(--sleeve);
+    max-width: 60ch;
+  }
+
+  .steps p a {
+    color: var(--label);
+    text-decoration-color: var(--hair);
+    text-underline-offset: 3px;
+  }
+
+  .steps p a:hover { text-decoration-color: var(--signal); }
+
+  .steps p code {
+    font-family: var(--mono);
+    font-size: 0.8125rem;
+    color: var(--label);
+  }
+
+  pre {
+    margin: 4px 0 0;
+    padding: 14px 18px;
+    overflow-x: auto;
+    background: var(--shellac);
+    border: 1px solid var(--hair);
+    border-radius: 12px;
+    font: 0.8125rem/1.7 var(--mono);
+    color: var(--label);
+  }
+
+  .specs {
+    position: sticky;
+    top: 32px;
+    display: grid;
+    gap: 14px;
+  }
+
+  .specs .controls { margin-top: 0; }
+
+  .specs .controls div { grid-template-columns: 6.5em minmax(0, 1fr); }
+
+  /* Footer */
+
+  .foot {
+    border-top: 1px solid var(--hair);
+    padding-block: 40px 56px;
+  }
+
+  .foot .wrap {
+    display: grid;
+    gap: 18px;
+  }
+
+  .foot-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .foot-mark {
+    font: 300 1.75rem/1 var(--display);
+    letter-spacing: -0.02em;
+  }
+
+  .foot nav {
+    display: flex;
+    gap: 24px;
+  }
+
+  .foot nav a {
+    color: var(--sleeve);
+    text-decoration: none;
+    font-size: 0.9375rem;
+  }
+
+  .foot nav a:hover { color: var(--label); }
+
+  .foot .mono {
+    max-width: 80ch;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 960px) {
+    .shelf,
+    .build,
+    .facts { grid-template-columns: minmax(0, 1fr); }
+
+    .specs { position: static; }
+  }
+
+  @media (max-width: 560px) {
+    .home img { height: auto; }
+
+    .home .widget-small { width: 48%; }
+
+    .home .widget-medium { width: 100%; }
+  }
+
+  @media (max-width: 960px) {
+    .hero .wrap {
+      grid-template-columns: minmax(0, 1fr);
+      min-height: 0;
+    }
+
+    .turntable {
+      width: min(118vw, 640px);
+      margin: 12px 0 40px 8vw;
+    }
+
+    .section-head { grid-template-columns: minmax(0, 1fr); }
+
+    .modes { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  @media (max-width: 560px) {
+    .bar nav a:not(:last-child) { display: none; }
+  }
+</style>
+
+<header class="wrap bar">
+  <span class="mono">Open source &#183; SwiftUI &#183; iOS 17+</span>
+  <nav aria-label="Sections">
+    <a href="#play">Modes</a>
+    <a href="#widgets">Widgets</a>
+    <a href="#build">Build it</a>
+    <a href="https://github.com/mateuszlomni/podium">GitHub</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-copy">
+        <h1 class="wordmark">Podium</h1>
+        <p class="lead">A click wheel and a spinning record for the music playing in Spotify.</p>
+        <p class="body">A free iPhone app that controls the Spotify app on your phone. Its widgets put the record you're playing on your Home Screen and Lock Screen.</p>
+        <div class="actions">
+          <a class="button" href="https://github.com/mateuszlomni/podium">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            View on GitHub
+          </a>
+          <a class="link" href="#build">How to build it</a>
+        </div>
+      </div>
+
+      <div class="turntable">
+        <button class="record" type="button" aria-label="Stop the record">
+          <svg class="disc" viewBox="0 0 1000 1000" aria-hidden="true">
+            <defs>
+              <linearGradient id="label-art" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#59667a"/>
+                <stop offset="1" stop-color="#141a24"/>
+              </linearGradient>
+            </defs>
+            <circle cx="500" cy="500" r="500" fill="#0d0d0e"/>
+            <g fill="none" stroke="#fff" stroke-width="2">
+              <circle cx="500" cy="500" r="450" stroke-opacity=".09"/>
+              <circle cx="500" cy="500" r="438" stroke-opacity=".045"/>
+              <circle cx="500" cy="500" r="426" stroke-opacity=".045"/>
+              <circle cx="500" cy="500" r="414" stroke-opacity=".045"/>
+              <circle cx="500" cy="500" r="402" stroke-opacity=".045"/>
+              <circle cx="500" cy="500" r="390" stroke-opacity=".09"/>
+              <circle cx="500" cy="500" r="378" stroke-opacity=".045"/>
+              <circle cx="500" cy="500" r="366" stroke-opacity=".045"/>
+              <circle cx="500" cy="500" r="354" stroke-opacity=".045"/>
+              <circle cx="500" cy="500" r="342" stroke-opacity=".045"/>
+              <circle cx="500" cy="500" r="330" stroke-opacity=".09"/>
+              <circle cx="500" cy="500" r="318" stroke-opacity=".045"/>
+              <circle cx="500" cy="500" r="306" stroke-opacity=".045"/>
+              <circle cx="500" cy="500" r="294" stroke-opacity=".045"/>
+              <circle cx="500" cy="500" r="282" stroke-opacity=".045"/>
+              <circle cx="500" cy="500" r="270" stroke-opacity=".09"/>
+              <circle cx="500" cy="500" r="258" stroke-opacity=".045"/>
+              <circle cx="500" cy="500" r="246" stroke-opacity=".045"/>
+              <circle cx="500" cy="500" r="234" stroke-opacity=".045"/>
+              <circle cx="500" cy="500" r="222" stroke-opacity=".045"/>
+              <circle cx="500" cy="500" r="210" stroke-opacity=".09"/>
+              <circle cx="500" cy="500" r="198" stroke-opacity=".045"/>
+              <circle cx="500" cy="500" r="186" stroke-opacity=".045"/>
+              <circle cx="500" cy="500" r="174" stroke-opacity=".045"/>
+            </g>
+            <circle cx="500" cy="500" r="176" fill="none" stroke="#000" stroke-opacity=".5" stroke-width="6"/>
+            <circle cx="500" cy="500" r="170" fill="url(#label-art)"/>
+            <g fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="9" stroke-linecap="round">
+              <path d="M444 466 q14 -15 28 0 t28 0 t28 0 t28 0"/>
+              <path d="M444 500 q14 -15 28 0 t28 0 t28 0 t28 0"/>
+              <path d="M444 534 q14 -15 28 0 t28 0 t28 0 t28 0"/>
+            </g>
+            <circle cx="500" cy="500" r="11" fill="#06080a"/>
+          </svg>
+          <span class="sheen"></span>
+        </button>
+        <p class="rpm mono" aria-live="polite"><strong>33&#8531; rpm</strong><span class="rpm-hint">Tap the record to stop it</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="play">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Two ways to play</h2>
+        <p>Switch between them with the icon in the top-right corner. Both show the track, the artist and a progress bar you can drag to seek.</p>
+      </div>
+
+      <div class="modes">
+        <figure class="mode">
+          <div class="phone">
+            <img src="assets/screen-wheel.jpg" width="640" height="1391" loading="lazy" alt="Podium in click wheel mode: an album carousel above the track Glass Water by Aeris, a progress bar at 2:27 and a round click wheel.">
+          </div>
+          <figcaption>
+            <h3>Click wheel</h3>
+            <p>Turn the wheel to flip through what Spotify recommends for you, with a haptic tick at every step.</p>
+            <dl class="controls">
+              <div><dt>Rotate</dt><dd>Browse albums and playlists</dd></div>
+              <div><dt>Center</dt><dd>Play the one you stopped on</dd></div>
+              <div><dt>Top</dt><dd>Jump back to what's playing</dd></div>
+              <div><dt>Left, right</dt><dd>Previous or next track</dd></div>
+              <div><dt>Bottom</dt><dd>Play or pause</dd></div>
+            </dl>
+          </figcaption>
+        </figure>
+
+        <figure class="mode">
+          <div class="phone">
+            <img src="assets/screen-vinyl.jpg" width="640" height="1391" loading="lazy" alt="Podium in vinyl mode: a record filling the screen with the album art as its label, above the track Glass Water by Aeris and a progress bar.">
+          </div>
+          <figcaption>
+            <h3>Vinyl</h3>
+            <p>The record fills the screen and turns at 33&#8531; rpm while music plays, with the album art as its label. No buttons: the record is the control.</p>
+            <dl class="controls">
+              <div><dt>Tap</dt><dd>Play or pause</dd></div>
+              <div><dt>Swipe left</dt><dd>Next track</dd></div>
+              <div><dt>Swipe right</dt><dd>Previous track</dd></div>
+            </dl>
+          </figcaption>
+        </figure>
+      </div>
+
+      <p class="note mono">Screenshots from the iPhone 17 Pro Simulator, which plays a built-in demo library instead of Spotify.</p>
+    </div>
+  </section>
+
+  <section class="section" id="widgets">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>The record, on your Home Screen and Lock Screen</h2>
+        <p>The Now Playing widget comes in five sizes, and each one shows what Podium is playing. Add it from the Home Screen or Lock Screen editor by searching for Podium.</p>
+      </div>
+
+      <div class="shelf">
+        <div class="shelf-group">
+          <p class="mono">Home Screen</p>
+          <div class="home">
+            <img class="widget-small" src="assets/widget-small.png" width="321" height="325" loading="lazy" alt="Small Podium widget: a record with the album art as its label and a waveform in the corner.">
+            <img class="widget-medium" src="assets/widget-medium.png" width="691" height="325" loading="lazy" alt="Medium Podium widget: a record beside the track Still Here by Aeris and a progress bar.">
+          </div>
+          <dl class="controls">
+            <div><dt>Small</dt><dd>The record with the album art as its label. A waveform appears in the corner while music plays.</dd></div>
+            <div><dt>Medium</dt><dd>The record beside the track and the artist, with a progress bar.</dd></div>
+          </dl>
+        </div>
+
+        <div class="shelf-group">
+          <p class="mono">Lock Screen</p>
+          <div class="lock" role="img" aria-label="Lock Screen at 9:41. Above the clock, the inline widget reads Still Here &#183; Aeris. Below it are the circular widget, a ring almost full, and the rectangular widget with the track, the artist and a progress bar.">
+            <p class="lock-date">
+              <span>Mon 14</span>
+              <svg class="glyph" viewBox="-12 -12 24 24" aria-hidden="true"><circle r="10" /><circle r="3" /><path d="M-6.4 -2.2 A6.8 6.8 0 0 1 -2.2 -6.4" /></svg>
+              <span>Still Here &#183; Aeris</span>
+            </p>
+            <p class="lock-clock">9:41</p>
+            <div class="lock-row">
+              <svg class="acc-circular" viewBox="0 0 76 76" aria-hidden="true">
+                <circle class="ring-track" cx="38" cy="38" r="33" />
+                <circle class="ring-fill" cx="38" cy="38" r="33" transform="rotate(-90 38 38)" />
+                <g class="glyph" transform="translate(38 38) scale(1.05)"><circle r="10" /><circle r="3" /><path d="M-6.4 -2.2 A6.8 6.8 0 0 1 -2.2 -6.4" /></g>
+              </svg>
+              <div class="acc-rect" aria-hidden="true">
+                <strong>Still Here</strong>
+                <span>Aeris</span>
+                <i class="acc-bar"><b></b></i>
+              </div>
+            </div>
+          </div>
+          <dl class="controls">
+            <div><dt>Inline</dt><dd>The track and the artist, next to the date.</dd></div>
+            <div><dt>Circular</dt><dd>A ring that fills as the track plays.</dd></div>
+            <div><dt>Rectangular</dt><dd>The track, the artist and a progress bar.</dd></div>
+          </dl>
+        </div>
+      </div>
+
+      <div class="facts">
+        <div>
+          <h3>Updates when the music changes</h3>
+          <p>Podium refreshes its widgets when the track changes, when you pause and when you seek. Nothing polls in the background.</p>
+        </div>
+        <div>
+          <h3>Progress without refreshes</h3>
+          <p>The widget knows when the track started and when it ends, so iOS moves the bar along on its own between updates.</p>
+        </div>
+        <div>
+          <h3>Tap to open Podium</h3>
+          <p>The app shares a small snapshot with its widgets through an App Group. Label art is saved at 256 &#215; 256 px to stay under WidgetKit's image size limit.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="build">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Build it yourself</h2>
+        <p>Podium isn't on the App Store. Spotify's developer terms allow apps like it for personal, non-commercial use, so you build it from source and install it on your own iPhone.</p>
+      </div>
+
+      <div class="build">
+        <ol class="steps">
+          <li>
+            <h3>Run it in the Simulator</h3>
+            <p>Open the project and press Run. The Simulator plays a demo library, so there's nothing to set up.</p>
+            <pre><code>git clone https://github.com/mateuszlomni/podium.git
+open podium/Podium.xcodeproj</code></pre>
+          </li>
+          <li>
+            <h3>Create a Spotify app</h3>
+            <p>In the <a href="https://developer.spotify.com/dashboard">Spotify Developer Dashboard</a>, create an app, select iOS, and add your bundle ID and this redirect URI.</p>
+            <pre><code>podium-player://spotify-login-callback</code></pre>
+          </li>
+          <li>
+            <h3>Add your keys</h3>
+            <p>Copy the example config, then fill in <code>PODIUM_BUNDLE_ID</code>, <code>DEVELOPMENT_TEAM</code> and <code>SPOTIFY_CLIENT_ID</code>. Git ignores this file.</p>
+            <pre><code>cp Config/Secrets.example.xcconfig Config/Secrets.xcconfig</code></pre>
+          </li>
+          <li>
+            <h3>Run it on your iPhone</h3>
+            <p>Turn on Developer Mode and run from Xcode. Start playing something in Spotify, open Podium and tap Connect.</p>
+          </li>
+        </ol>
+
+        <aside class="specs" aria-label="Requirements">
+          <p class="mono">Requirements</p>
+          <dl class="controls">
+            <div><dt>Xcode</dt><dd>26 or later</dd></div>
+            <div><dt>iOS</dt><dd>17 or later</dd></div>
+            <div><dt>Spotify</dt><dd>The Spotify app and a Premium account</dd></div>
+            <div><dt>Listeners</dt><dd>You, plus up to 5 people you add in the dashboard</dd></div>
+            <div><dt>Apple ID</dt><dd>A free account works. Its installs expire after 7 days; run from Xcode again to reinstall.</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-row">
+      <span class="foot-mark">Podium</span>
+      <nav aria-label="Project">
+        <a href="https://github.com/mateuszlomni/podium">GitHub</a>
+        <a href="https://github.com/mateuszlomni/podium/blob/main/LICENSE">MIT License</a>
+      </nav>
+    </div>
+    <p class="mono">Podium is an independent project and is not affiliated with, endorsed or sponsored by Spotify or Apple. Spotify is a trademark of Spotify AB. iPhone is a trademark of Apple Inc.</p>
+  </div>
+</footer>
+
+<script>
+  (() => {
+    const record = document.querySelector(".record");
+    const hint = document.querySelector(".rpm-hint");
+    if (!record || !hint) return;
+
+    const setStopped = (stopped) => {
+      record.classList.toggle("is-stopped", stopped);
+      record.setAttribute("aria-label", stopped ? "Spin the record" : "Stop the record");
+      hint.textContent = stopped ? "Tap the record to spin it" : "Tap the record to stop it";
+    };
+
+    setStopped(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    record.addEventListener("click", () => setStopped(!record.classList.contains("is-stopped")));
+  })();
+</script>
+
+</html>
