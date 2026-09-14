@@ -295,10 +295,13 @@
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 40px 70px -30px rgba(0, 0, 0, 0.9);
   }
 
-  .phone img {
+  .phone video {
+    display: block;
     width: 100%;
     height: auto;
     border-radius: 38px;
+    clip-path: inset(0 round 38px);
+    background: var(--ground);
   }
 
   .mode .phone { width: min(290px, 100%); }
@@ -394,13 +397,24 @@
     display: flex;
     align-items: center;
     gap: 7px;
+    max-width: 100%;
     font: 600 1rem/1.2 var(--text);
     color: rgba(255, 255, 255, 0.82);
   }
 
   .lock-date .glyph {
+    flex: none;
     width: 15px;
     height: 15px;
+  }
+
+  .lock-date span { white-space: nowrap; }
+
+  /* Like iOS, a long inline widget truncates instead of wrapping. */
+  .lock-date span:last-child {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .glyph circle,
@@ -438,11 +452,11 @@
 
   .ring-track { stroke-opacity: 0.25; }
 
-  /* Near the end of the track, like the Home Screen widgets. */
+  /* Two thirds into the track, like the Home Screen widgets. */
   .ring-fill {
     stroke-linecap: round;
     stroke-dasharray: 207.35;
-    stroke-dashoffset: 16.6;
+    stroke-dashoffset: 68.4;
   }
 
   .acc-rect {
@@ -471,7 +485,7 @@
 
   .acc-bar b {
     display: block;
-    width: 92%;
+    width: 67%;
     height: 100%;
     background: currentColor;
   }
@@ -687,10 +701,9 @@
         <button class="record" type="button" aria-label="Stop the record">
           <svg class="disc" viewBox="0 0 1000 1000" aria-hidden="true">
             <defs>
-              <linearGradient id="label-art" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#59667a"/>
-                <stop offset="1" stop-color="#141a24"/>
-              </linearGradient>
+              <clipPath id="label-clip">
+                <circle cx="500" cy="500" r="170"/>
+              </clipPath>
             </defs>
             <circle cx="500" cy="500" r="500" fill="#0d0d0e"/>
             <g fill="none" stroke="#fff" stroke-width="2">
@@ -720,12 +733,8 @@
               <circle cx="500" cy="500" r="174" stroke-opacity=".045"/>
             </g>
             <circle cx="500" cy="500" r="176" fill="none" stroke="#000" stroke-opacity=".5" stroke-width="6"/>
-            <circle cx="500" cy="500" r="170" fill="url(#label-art)"/>
-            <g fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="9" stroke-linecap="round">
-              <path d="M444 466 q14 -15 28 0 t28 0 t28 0 t28 0"/>
-              <path d="M444 500 q14 -15 28 0 t28 0 t28 0 t28 0"/>
-              <path d="M444 534 q14 -15 28 0 t28 0 t28 0 t28 0"/>
-            </g>
+            <circle cx="500" cy="500" r="170" fill="#141a24"/>
+            <image href="assets/cover-thriller.jpg" x="330" y="330" width="340" height="340" preserveAspectRatio="xMidYMid slice" clip-path="url(#label-clip)"/>
             <circle cx="500" cy="500" r="11" fill="#06080a"/>
           </svg>
           <span class="sheen"></span>
@@ -745,7 +754,7 @@
       <div class="modes">
         <figure class="mode">
           <div class="phone">
-            <img src="assets/screen-wheel.jpg" width="640" height="1391" loading="lazy" alt="Podium in click wheel mode: an album carousel above the track Glass Water by Aeris, a progress bar at 2:27 and a round click wheel.">
+            <video src="assets/wheel.mp4" poster="assets/screen-wheel.jpg" width="600" height="1304" autoplay muted loop playsinline preload="auto" aria-label="Podium in click wheel mode: turning the wheel flips the album carousel from Thriller to Off the Wall and Bad, above the playing track, a progress bar and the click wheel."></video>
           </div>
           <figcaption>
             <h3>Click wheel</h3>
@@ -762,7 +771,7 @@
 
         <figure class="mode">
           <div class="phone">
-            <img src="assets/screen-vinyl.jpg" width="640" height="1391" loading="lazy" alt="Podium in vinyl mode: a record filling the screen with the album art as its label, above the track Glass Water by Aeris and a progress bar.">
+            <video src="assets/vinyl.mp4" poster="assets/screen-vinyl.jpg" width="600" height="1304" autoplay muted loop playsinline preload="auto" aria-label="Podium in vinyl mode: a record with the Thriller cover as its label fills the screen and turns while music plays, above the track and a progress bar."></video>
           </div>
           <figcaption>
             <h3>Vinyl</h3>
@@ -776,7 +785,7 @@
         </figure>
       </div>
 
-      <p class="note mono">Screenshots from the iPhone 17 Pro Simulator, which plays a built-in demo library instead of Spotify.</p>
+      <p class="note mono">Recorded in the iPhone 17 Pro Simulator.</p>
     </div>
   </section>
 
@@ -791,8 +800,8 @@
         <div class="shelf-group">
           <p class="mono">Home Screen</p>
           <div class="home">
-            <img class="widget-small" src="assets/widget-small.png" width="321" height="325" loading="lazy" alt="Small Podium widget: a record with the album art as its label and a waveform in the corner.">
-            <img class="widget-medium" src="assets/widget-medium.png" width="691" height="325" loading="lazy" alt="Medium Podium widget: a record beside the track Still Here by Aeris and a progress bar.">
+            <img class="widget-small" src="assets/widget-small.png" width="321" height="325" loading="lazy" alt="Small Podium widget: a record with the Thriller cover as its label and a waveform in the corner.">
+            <img class="widget-medium" src="assets/widget-medium.png" width="691" height="325" loading="lazy" alt="Medium Podium widget: a record with the Thriller cover beside the track Beat It by Michael Jackson and a progress bar.">
           </div>
           <dl class="controls">
             <div><dt>Small</dt><dd>The record with the album art as its label. A waveform appears in the corner while music plays.</dd></div>
@@ -802,11 +811,11 @@
 
         <div class="shelf-group">
           <p class="mono">Lock Screen</p>
-          <div class="lock" role="img" aria-label="Lock Screen at 9:41. Above the clock, the inline widget reads Still Here &#183; Aeris. Below it are the circular widget, a ring almost full, and the rectangular widget with the track, the artist and a progress bar.">
+          <div class="lock" role="img" aria-label="Lock Screen at 9:41. Above the clock, the inline widget reads Beat It &#183; Michael Jackson. Below it are the circular widget, a ring two-thirds full, and the rectangular widget with the track, the artist and a progress bar.">
             <p class="lock-date">
               <span>Mon 14</span>
               <svg class="glyph" viewBox="-12 -12 24 24" aria-hidden="true"><circle r="10" /><circle r="3" /><path d="M-6.4 -2.2 A6.8 6.8 0 0 1 -2.2 -6.4" /></svg>
-              <span>Still Here &#183; Aeris</span>
+              <span>Beat It &#183; Michael Jackson</span>
             </p>
             <p class="lock-clock">9:41</p>
             <div class="lock-row">
@@ -816,8 +825,8 @@
                 <g class="glyph" transform="translate(38 38) scale(1.05)"><circle r="10" /><circle r="3" /><path d="M-6.4 -2.2 A6.8 6.8 0 0 1 -2.2 -6.4" /></g>
               </svg>
               <div class="acc-rect" aria-hidden="true">
-                <strong>Still Here</strong>
-                <span>Aeris</span>
+                <strong>Beat It</strong>
+                <span>Michael Jackson</span>
                 <i class="acc-bar"><b></b></i>
               </div>
             </div>
@@ -902,11 +911,18 @@ open podium/Podium.xcodeproj</code></pre>
         <a href="https://github.com/mateuszlomni/podium/blob/main/LICENSE">MIT License</a>
       </nav>
     </div>
-    <p class="mono">Podium is an independent project and is not affiliated with, endorsed or sponsored by Spotify or Apple. Spotify is a trademark of Spotify AB. iPhone is a trademark of Apple Inc.</p>
+    <p class="mono">Podium is an independent project and is not affiliated with, endorsed or sponsored by Spotify, Apple or the artists shown. Spotify is a trademark of Spotify AB. iPhone is a trademark of Apple Inc. Album artwork &#169; its respective owners.</p>
   </div>
 </footer>
 
 <script>
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    document.querySelectorAll("video[autoplay]").forEach((video) => {
+      video.removeAttribute("autoplay");
+      video.pause();
+    });
+  }
+
   (() => {
     const record = document.querySelector(".record");
     const hint = document.querySelector(".rpm-hint");
