@@ -92,12 +92,18 @@ Vinyl:
 - `Shared/NowPlayingStore`: now-playing snapshot and label artwork shared by the app and the widgets
 - `PodiumWidgets`: widget extension (small, medium and Lock Screen widgets)
 
+## Support
+
+Podium is free and open source, and every feature is available to everyone. If you enjoy it, you can support its development on [Buy Me a Coffee](https://buymeacoffee.com/inteliquest). Support is voluntary and doesn't unlock anything in the app.
+
 ## Disclaimer
 
 Podium is an independent project and is not affiliated with, endorsed or sponsored by Spotify or Apple. Spotify is a trademark of Spotify AB; iPhone is a trademark of Apple Inc.
 
-The Spotify Developer Terms allow apps like this for personal, non-commercial use. Don't publish builds of Podium to the App Store or monetize them.
+The Spotify Developer Terms allow apps like this for personal, non-commercial use. Don't publish builds of Podium to the App Store, charge for them, or add payments or ads to the app.
 
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+Made by [Inteliquest](https://inteliquest.pl).

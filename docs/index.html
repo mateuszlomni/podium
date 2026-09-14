@@ -591,6 +591,33 @@
 
   .specs .controls div { grid-template-columns: 6.5em minmax(0, 1fr); }
 
+  /* Support */
+
+  .support { padding-block: clamp(56px, 8vw, 96px); }
+
+  .support-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px 56px;
+  }
+
+  .support-copy {
+    display: grid;
+    gap: 12px;
+    max-width: 60ch;
+  }
+
+  .support-copy h2 {
+    font-weight: 300;
+    font-size: clamp(1.875rem, 3.5vw, 2.5rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .support-copy p { color: var(--sleeve); }
+
   /* Footer */
 
   .foot {
@@ -615,6 +642,27 @@
     font: 300 1.75rem/1 var(--display);
     letter-spacing: -0.02em;
   }
+
+  .foot-credit {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 16px;
+  }
+
+  .foot-by {
+    color: var(--sleeve);
+    font-size: 0.9375rem;
+  }
+
+  .foot-by a {
+    color: var(--label);
+    text-decoration-color: var(--hair);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 0.2s;
+  }
+
+  .foot-by a:hover { text-decoration-color: var(--signal); }
 
   .foot nav {
     display: flex;
@@ -900,14 +948,31 @@ open podium/Podium.xcodeproj</code></pre>
       </div>
     </div>
   </section>
+
+  <section class="section support" id="support">
+    <div class="wrap support-row">
+      <div class="support-copy">
+        <h2>Support Podium</h2>
+        <p>Podium is free and open source, and every feature is in the code for everyone. If it earned a spot on your Home Screen, you can support its development with a coffee. It's voluntary and doesn't unlock anything in the app.</p>
+      </div>
+      <a class="button" href="https://buymeacoffee.com/inteliquest">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M5 9h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5zM16 11h1.5a2.5 2.5 0 0 1 0 5H16M8.5 3.5v2.5M12.5 3.5v2.5"/></svg>
+        Support on Buy Me a Coffee
+      </a>
+    </div>
+  </section>
 </main>
 
 <footer class="foot">
   <div class="wrap">
     <div class="foot-row">
-      <span class="foot-mark">Podium</span>
+      <p class="foot-credit">
+        <span class="foot-mark">Podium</span>
+        <span class="foot-by">Made by <a href="https://inteliquest.pl">Inteliquest</a></span>
+      </p>
       <nav aria-label="Project">
         <a href="https://github.com/mateuszlomni/podium">GitHub</a>
+        <a href="https://buymeacoffee.com/inteliquest">Support</a>
         <a href="https://github.com/mateuszlomni/podium/blob/main/LICENSE">MIT License</a>
       </nav>
     </div>
